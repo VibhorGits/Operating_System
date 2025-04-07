@@ -34,11 +34,6 @@ This is the custom shell that integrates the JAM scripting language with traditi
    
    ```bash
    g++ shell.cpp commands.cpp history.cpp scheduler.cpp -o jam_shell -I../JAM -I. -L../JAM -ljam -pthread
-   
-  -I../JAM includes header files from the JAM directory
-  -L../JAM links the static library libjam.a
-  -ljam links the JAM interpreter
-  -pthread enables thread support
    ```
 
 2. **Execute the program**
