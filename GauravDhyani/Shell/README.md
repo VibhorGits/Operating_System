@@ -27,18 +27,19 @@ This is the custom shell that integrates the JAM scripting language with traditi
 │   ├── scheduler.cpp
 │   ├── scheduler.h
 │   ├── jam_shell              # Executable output after building
- ```
+   ```
 ## 🚀 How to Run
 1. **Compile the program** 
    Open your terminal in the Shell directory and run:
    
    ```bash
    g++ shell.cpp commands.cpp history.cpp scheduler.cpp -o jam_shell -I../JAM -I. -L../JAM -ljam -pthread
-  ```
+   
   -I../JAM includes header files from the JAM directory
   -L../JAM links the static library libjam.a
   -ljam links the JAM interpreter
   -pthread enables thread support
+   ```
 
 2. **Execute the program**
    After successful compilation, run the integrated JAM shell:
