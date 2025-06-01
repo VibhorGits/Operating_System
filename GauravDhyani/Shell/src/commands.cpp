@@ -8,7 +8,7 @@
 #include "scheduler.h"     
 #include <sstream>         
 #include "../JAM/executionengine.h"
- 
+#include "jambo.h"
 using namespace std;
 
 // -------------------------
@@ -58,6 +58,12 @@ void print_help_menu() {
 
     printf("\nBackground Execution:\n");
     printf("  command &                    - Run command in background\n");
+
+    printf("\nJAMBO Command:\n");
+    printf("  jambo                       - Launch interactive JAMBO shell\n");
+    printf("  jambo -l <filename>         - Perform lexer analysis on a JAM file\n");
+    printf("  jambo -p <filename>         - Parse a JAM source file\n");
+    printf("  jambo -s <filename>         - Run semantic analysis on a JAM file\n");
 
     printf("===========================================\n\n");
 }
@@ -233,22 +239,55 @@ void execute_jam_script(const char* filename) {
  * @param task The ScheduledTask to be executed.
  */
 void execute_task(const Task& task) {
-    std::istringstream iss(task.command);
-    std::string cmd;
-    iss >> cmd;
+    const std::string& filename = task.command;
 
-    if (cmd == "jexecute") {
-        std::string filename;
-        iss >> filename;
-
-        if (!filename.empty()) {
-            std::cout << "[Scheduler] Executing JAM script: " << filename << "\n";
-            execute_jam_script(filename.c_str()); // Your actual logic for running scripts
-        } else {
-            std::cerr << "[Scheduler] Error: No filename provided in jexecute command.\n";
-        }
+    if (!filename.empty()) {
+        std::cout << "[Scheduler] Executing JAM script: " << filename << "\n";
+        execute_jam_script(filename.c_str()); // Call your actual script execution logic
     } else {
-        std::cerr << "[Scheduler] Unsupported scheduled command: " << task.command << "\n";
+        std::cerr << "[Scheduler] Error: Empty filename in task command.\n";
     }
 }
 
+
+// -------------------------
+// JAMBO Command Handler
+// -------------------------
+
+/**
+ * @brief Handles JAMBO command-line invocations based on provided tokens.
+ * 
+ * Interprets command-line tokens to determine which JAMBO operation to execute:
+ * Prints appropriate status messages for each operation. 
+ * Displays an error message if an unrecognized command or insufficient parameters are provided.
+ * 
+ * @param token_count The number of command-line tokens received.
+ * @param tokens      An array of strings containing the command-line tokens.
+ */
+void handle_jambo_command(int token_count, char *tokens[])
+{
+    if (token_count == 1)
+    {
+        printf("Jambo invoked.\n");
+        run_jambo();
+    }
+    else if (strcmp(tokens[1], "-l") == 0 && token_count > 2)
+    {
+        printf("Loading JAMBO file: %s\n", tokens[2]);
+        analyse_lexer(tokens[2]);
+    }
+    else if (strcmp(tokens[1], "-s") == 0 && token_count > 2)
+    {
+        printf("Saving JAMBO file: %s\n", tokens[2]);
+        analyse_semantics(tokens[2]);
+    }
+    else if (strcmp(tokens[1], "-p") == 0 && token_count > 2)
+    {
+        printf("Parsing JAMBO source: %s\n", tokens[2]);
+        analyse_parser(tokens[2]);
+    }
+    else
+    {
+        printf("Unknown jambo command or missing parameters.\n");
+    }
+}

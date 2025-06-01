@@ -20,5 +20,6 @@ void execute_shell_command(const char* input);
 bool is_jam_script(const char* input);
 void execute_jam_script(const char* filename);
 void execute_task(const Task& task);
+void handle_jambo_command(int token_count, char *tokens[]);
 
 #endif // COMMANDS_H

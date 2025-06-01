@@ -53,17 +53,11 @@ void jschedule_command(const std::string &filename, int priority)
         return;
     }
 
-    std::string line;
-    while (std::getline(file, line))
-    {
-        if (!line.empty())
-        {
-            add_task(task_id_counter++, line, priority);
-        }
-    }
+    // Store the filename only, not the file content
+    add_task(task_id_counter++, filename, priority);
 
     file.close();
-    std::cout << "[Tasks added from " << filename << "]\n";
+    std::cout << "[Script file " << filename << " scheduled as a single task]\n";
 }
 
 /**
@@ -93,30 +87,7 @@ void round_robin_schedule()
         Task t = rr_queue.front();
         rr_queue.pop();
 
-        if (t.command.find("jexecute ") == 0)
-        {
-            // Handle jexecute tasks using JAM interpreter
-            execute_task(t);
-        }
-        else
-        {
-            // Fallback to forking shell commands
-            pid_t pid = fork();
-            if (pid == 0)
-            {
-                alarm(2); // 2-second time quantum
-                execl("/bin/sh", "sh", "-c", t.command.c_str(), nullptr);
-                exit(0); // exit child
-            }
-            else if (pid > 0)
-            {
-                waitpid(pid, nullptr, 0); // wait for child
-            }
-            else
-            {
-                perror("fork failed");
-            }
-        }
+        execute_task(t);
     }
 }
 

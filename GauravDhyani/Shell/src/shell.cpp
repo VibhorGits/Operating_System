@@ -12,6 +12,8 @@
 #include <string>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 #include <chrono>
 #include <ctime>
 #include <sstream>
@@ -326,20 +328,19 @@ void run_shell_loop()
 
     while (true)
     {
-        printf("JAM [%s]> ", current_time().c_str());
-        fflush(stdout);
-
-        if (!fgets(input, MAX_INPUT, stdin))
-        {
+        
+        char *line = readline(("JAM [" + current_time() + "]> ").c_str());
+        if (!line) {
             printf("\nSession terminated.\n");
             break;
         }
-
-        input[strcspn(input, "\n")] = 0;
-        if (strlen(input) == 0)
+        if (strlen(line) == 0) {
+            free(line);
             continue;
-
-        add_to_history(input);
+        }
+        add_history(line);
+        strncpy(input, line, MAX_INPUT);
+        free(line);
 
         if (strncmp(input, "exit", 4) == 0)
             break;
@@ -467,6 +468,10 @@ void run_shell_loop()
         {
             execute_shell_command(input);
         }
+        else if (strcmp(tokens[0], "jambo") == 0)
+        {
+            handle_jambo_command(token_count, tokens);
+        }
         else
         {
             std::vector<char *> args;
@@ -496,6 +501,7 @@ void run_shell_loop()
  * @param argv Argument vector.
  * @return Exit code.
  */
+
 int main(int argc, char *argv[])
 {
     show_banner();
@@ -504,3 +510,4 @@ int main(int argc, char *argv[])
     save_history();
     return 0;
 }
+
