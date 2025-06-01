@@ -18,12 +18,12 @@ This is a GUI wrapper that integrates the JAM Shell CLI with  features like a fu
 ## Installing Dependencies
    **Install required dependencies for compiling and running the JAM Shell GUI:**
      
-     1. If you’re on Ubuntu/Debian:
+   1. If you’re on Ubuntu/Debian:
         ```bash
         sudo apt install tmux gnome-terminal cmake qtbase5-dev qttools5-dev qttools5-dev-tools libqt5svg5-dev qtchooser
         ```
 
-     2. If you’re on Fedora/RHEL:
+   2. If you’re on Fedora/RHEL:
         ```bash
         sudo dnf install tmux gnome-terminal cmake qt6-qtbase-devel qt6-qttools-devel qt6-qtsvg-devel
         ```
